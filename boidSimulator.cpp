@@ -31,9 +31,12 @@ public:
     // Calculates new vector based on rules
     void update(float deltaTime, const std::vector<Boid>& allBoids) {
 
-        align(allBoids);
-        cohesion(allBoids);
-        separate(allBoids);
+        std::pair<float, float> alignment = align(allBoids);
+        std::pair<float, float> cohesion = cohere(allBoids);
+        std::pair<float, float> separation = separate(allBoids);
+
+        velX += (alignment.first + cohesion.first + separation.first);
+        velY += (alignment.second + cohesion.second + separation.second);
 
         // Update position based on currently velocity
         posX += velX * deltaTime;
@@ -54,16 +57,68 @@ private:
     float posX, posY;
     float velX, velY;
 
-    void align(const std::vector<Boid>& allBoids) {
-        // Alignement rule logic
+    const float ALIGNMENT_RADIUS = 50.0f;
+    const float COHESION_RADIUS = 50.0f;
+    const float SEPARATION_RADIUS = 20.0f;
+    const float MAX_FORCE = 0.05f;
+    const float MAX_SPEED = 2.0f;
+
+    std::pair<float, float> align(const std::vector<Boid>& allBoids) {
+        // Alignment rule logic
+
+        std::pair<float, float> averageVelocity(0.0f, 0.0f);
+        int count = 0;
+        for (const Boid& other : allBoids) {
+            if (&other != this) {
+                averageVelocity.first += other.velX;
+                averageVelocity.second += other.velY;
+                count++;
+            }
+        }
+        if (count > 0) {
+            averageVelocity.first /= count;
+            averageVelocity.second /= count;
+        }
+        return averageVelocity;
     }
 
-    void cohesion(const std::vector<Boid>& allBoids) {
+    std::pair<float, float> cohere(const std::vector<Boid>& allBoids) {
         // Cohesion rule logic
+
+        std::pair<float, float> centerOfMass(0.0f, 0.0f);
+        int count = 0;
+        for (const Boid& other : allBoids) {
+            if (&other != this) {
+                centerOfMass.first += other.posX;
+                centerOfMass.second += other.posY;
+                count++;
+            }
+        }
+        if (count > 0) {
+            centerOfMass.first /= count;
+            centerOfMass.second /= count;
+        }
+        return {centerOfMass.first - posX, centerOfMass.second - posY};
     }
 
-    void separate(const std::vector<Boid>& allBoids) {
+    std::pair<float, float> separate(const std::vector<Boid>& allBoids) {
         // Separation rule logic
+
+        std::pair<float, float> avoidanceVector(0.0f, 0.0f);
+        int count = 0;
+
+        for (const Boid& other : allBoids) {
+            if (&other != this) {
+                avoidanceVector.first += posX - other.posX;
+                avoidanceVector.first += posY - other.posY;
+                count++;
+            }
+        }
+        if (count > 0) {
+            avoidanceVector.first /= count;
+            avoidanceVector.second /= count;
+        }
+        return avoidanceVector;
     }
 };
 
@@ -105,9 +160,16 @@ int main() {
             // This runs at FPS defined rate
             float deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(elapsedTime).count();
 
+            int index = 0;
             for (Boid& boid : boids) {
                 // Update boids here
                 boid.update(deltaTime, boids);
+
+                if (index == 0) {
+                    auto position = boid.getPosition();
+                    std::cout << "Boid Pos: X=" << position.first << ", Y=" << position.second << std::endl;
+                }
+                index++;
             }
 
             previousTime = currentTime;
