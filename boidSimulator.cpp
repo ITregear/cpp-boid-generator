@@ -45,10 +45,31 @@ private:
 
 int main() {
     
+    // Setting up FPS timer
     const int FPS = 60;
     const std::chrono::milliseconds frameDuration(1000 / FPS);
-
     auto previousTime = std::chrono::steady_clock::now();
+
+    // Reserving memory required for total number of boids
+    const int numberOfBoids = 2;
+    std::vector<Boid> boids;
+    boids.reserve(numberOfBoids);
+
+    // Creating random number generator
+    std::random_device rd;
+    std::mt19937 eng(rd());
+    std::uniform_real_distribution<> distr(-100.0, 100.0);
+
+    // Initializing boids
+    // Assuming boids are initialized stationary
+
+    for (int i = 0; i < numberOfBoids; i++) {
+        float posX = distr(eng);
+        float posY = distr(eng);
+        float velX = distr(eng);
+        float velY = distr(eng);
+        boids.emplace_back(posX, posY, velX, velY);
+    }
 
     while (1) {
         auto currentTime = std::chrono::steady_clock::now();
@@ -57,6 +78,16 @@ int main() {
         if (elapsedTime >= frameDuration) {
             // Update Boid state, and simulate here
             // This runs at FPS defined rate
+
+            for (Boid& boid : boids) {
+                // Update boids here
+
+                std::pair<float, float> boidPos = boid.getPosition();
+                std::pair<float, float> boidVel = boid.getVelocity();
+
+                std::cout << "Boid Pos: " << boidPos.first << ", " << boidPos.second;
+                std::cout << std::endl;
+            }
 
             previousTime = currentTime;
         }
