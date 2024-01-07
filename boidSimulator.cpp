@@ -17,6 +17,8 @@ These are vectors
 
 #include <iostream>
 #include <utility>
+#include <chrono>
+#include <random>
 
 class Boid {
 public: 
@@ -42,13 +44,21 @@ private:
 
 
 int main() {
-    Boid testBoid(1, 3, 0, 3.2);
+    
+    const int FPS = 60;
+    const std::chrono::milliseconds frameDuration(1000 / FPS);
 
-    std::pair<float, float> position = testBoid.getPosition();
-    std::pair<float, float> velocity = testBoid.getVelocity();
+    auto previousTime = std::chrono::steady_clock::now();
 
-    std::cout << "Boid Position: (" << position.first << ", " << position.second << ")";
-    std::cout << std::endl;
-    std::cout << "Boid Velocity: (" << velocity.first << ", " << velocity.second << ")";
+    while (1) {
+        auto currentTime = std::chrono::steady_clock::now();
+        auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - previousTime);
 
+        if (elapsedTime >= frameDuration) {
+            // Update Boid state, and simulate here
+            // This runs at FPS defined rate
+
+            previousTime = currentTime;
+        }
+    }
 }
