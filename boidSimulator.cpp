@@ -28,6 +28,19 @@ public:
     Boid(float px, float py, float vx, float vy)
         : posX(px), posY(py), velX(vx), velY(vy) {}
 
+    // Calculates new vector based on rules
+    void update(float deltaTime, const std::vector<Boid>& allBoids) {
+
+        align(allBoids);
+        cohesion(allBoids);
+        separate(allBoids);
+
+        // Update position based on currently velocity
+        posX += velX * deltaTime;
+        posY += velY * deltaTime;
+    }
+
+    // Getter functions to retrieve position and velocity variables
     std::pair<float, float> getPosition() const {
         return {posX, posY};
     }
@@ -40,6 +53,18 @@ private:
     // Private methods, only accessible by each object instance of this class
     float posX, posY;
     float velX, velY;
+
+    void align(const std::vector<Boid>& allBoids) {
+        // Alignement rule logic
+    }
+
+    void cohesion(const std::vector<Boid>& allBoids) {
+        // Cohesion rule logic
+    }
+
+    void separate(const std::vector<Boid>& allBoids) {
+        // Separation rule logic
+    }
 };
 
 
@@ -78,15 +103,11 @@ int main() {
         if (elapsedTime >= frameDuration) {
             // Update Boid state, and simulate here
             // This runs at FPS defined rate
+            float deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(elapsedTime).count();
 
             for (Boid& boid : boids) {
                 // Update boids here
-
-                std::pair<float, float> boidPos = boid.getPosition();
-                std::pair<float, float> boidVel = boid.getVelocity();
-
-                std::cout << "Boid Pos: " << boidPos.first << ", " << boidPos.second;
-                std::cout << std::endl;
+                boid.update(deltaTime, boids);
             }
 
             previousTime = currentTime;
