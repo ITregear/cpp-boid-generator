@@ -1,18 +1,19 @@
 /*
+Achieved:
 TODO: Setup script to create single instance of boid
 TODO: Create functions that enforce the three core rules
 TODO: #1 Separation: steer to avoid crowding flockmates
 TODO: #2 Alignment: steer towards the average heading of local flockmates
 TODO: #3 Cohesion: steer to move towards the averge position (COM) of local flockmates
 TODO: Refactor into object so multiple boids can be initialised (may be better to store in array)
+Unimplemented:
 TODO: Create visualisation of boid objects, so live flocking can be simulated
 TODO: If previous goals easy, extend simulation to 3D
 */
 
 /*
-Each boid will need a position and a velocity.
-These are vectors
-
+Ivan Tregear
+09/01/2024
 */
 
 #include <iostream>

@@ -1,9 +1,26 @@
 {
     "tasks": [
         {
+            "type": "shell",
+            "label": "C/C++: g++.exe build active file with SFML",
+            "command": "C:\\msys64\\mingw64\\bin\\bash.exe",
+            "args": [
+                "-c",
+                "g++ -fdiagnostics-color=always -g ${file} -o ${fileDirname}/${fileBasenameNoExtension}.exe $(pkg-config --cflags --libs sfml-all)"
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build",
+            "detail": "Compiled file with SFML."
+        },
+        {
             "type": "cppbuild",
             "label": "C/C++: g++.exe build active file",
-            "command": "C:\\msys64\\ucrt64\\bin\\g++.exe",
+            "command": "C:/msys64/mingw64/bin/g++.exe",
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
@@ -12,7 +29,7 @@
                 "${fileDirname}\\${fileBasenameNoExtension}.exe"
             ],
             "options": {
-                "cwd": "${fileDirname}"
+                "cwd": "C:/msys64/mingw64/bin"
             },
             "problemMatcher": [
                 "$gcc"
